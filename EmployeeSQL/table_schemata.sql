@@ -1,131 +1,72 @@
-DROP TABLE IF EXISTS departments;
--- DROP TABLE IF EXISTS dept_emp;
--- DROP TABLE IF EXISTS payment;
--- DROP TABLE IF EXISTS rental;
--- DROP TABLE IF EXISTS staff;
--- DROP TABLE IF EXISTS store;
-
-
-CREATE TABLE departments (
-  dept_no varchar(30) NOT NULL,
-  dept_name varchar(45) NOT NULL
+CREATE TABLE "departments" (
+    "dept_no" varchar(30)   NOT NULL,
+    "dept_name" varchar(45)   NOT NULL,
+    CONSTRAINT "pk_departments" PRIMARY KEY (
+        "dept_no"
+     )
 );
 
--- CREATE TABLE address (
---   address_id integer NOT NULL,
---   address character varying(50) NOT NULL,
---   address2 character varying(50),
---   district character varying(20) NOT NULL,
---   city_id smallint NOT NULL,
---   postal_code character varying(10),
---   phone character varying(20) NOT NULL,
---   last_update timestamp without time zone DEFAULT now() NOT NULL
--- );
+CREATE TABLE "dept_emp" (
+    "emp_no" int   NOT NULL,
+    "dept_no" varchar(30)   NOT NULL,
+    CONSTRAINT "pk_dept_emp" PRIMARY KEY (
+        "emp_no","dept_no"
+     )
+);
 
--- CREATE TABLE city (
---   city_id integer NOT NULL,
---   city character varying(50) NOT NULL,
---   country_id smallint NOT NULL,
---   last_update timestamp without time zone DEFAULT now() NOT NULL
--- );
+CREATE TABLE "dept_manager" (
+    "dept_no" varchar(30)   NOT NULL,
+    "emp_no" int   NOT NULL,
+    CONSTRAINT "pk_dept_manager" PRIMARY KEY (
+        "dept_no","emp_no"
+     )
+);
 
--- CREATE TABLE country (
---     country_id integer NOT NULL,
---     country character varying(50) NOT NULL,
---     last_update timestamp without time zone DEFAULT now() NOT NULL
--- );
+CREATE TABLE "employees" (
+    "emp_no" int   NOT NULL,
+    "emp_title" varchar(30)   NOT NULL,
+    "birth_date" date   NOT NULL,
+    "first_name" varchar(30)   NOT NULL,
+    "last_name" varchar(30)   NOT NULL,
+    "sex" varchar(5)   NOT NULL,
+    "hire_date" date   NOT NULL,
+    CONSTRAINT "pk_employees" PRIMARY KEY (
+        "emp_no"
+     )
+);
 
--- CREATE TABLE customer (
---   customer_id integer NOT NULL,
---   store_id smallint NOT NULL,
---   first_name character varying(45) NOT NULL,
---   last_name character varying(45) NOT NULL,
---   email character varying(50),
---   address_id smallint NOT NULL,
---   activebool boolean DEFAULT true NOT NULL,
---   create_date date DEFAULT ('now'::text)::date NOT NULL,
---   last_update timestamp without time zone DEFAULT now(),
---   active integer
--- );
+CREATE TABLE "salaries" (
+    "emp_no" int   NOT NULL,
+    "salary" int   NOT NULL,
+    CONSTRAINT "pk_salaries" PRIMARY KEY (
+        "emp_no"
+     )
+);
 
--- CREATE TABLE customer_list (
---   id integer NOT NULL,
---   name character varying(50) NOT NULL,
---   address character varying(50) NOT NULL,
---   zip_code character varying(10),
---   phone character varying(20) NOT NULL,
---   city character varying(50) NOT NULL,
---   country character varying(50) NOT NULL,
---   notes character varying(50) NOT NULL,
---   sid integer NOT NULL
--- );
+CREATE TABLE "titles" (
+    "title_id" varchar(30)   NOT NULL,
+    "title" varchar(30)   NOT NULL,
+    CONSTRAINT "pk_titles" PRIMARY KEY (
+        "title_id"
+     )
+);
 
--- CREATE TABLE film (
---   film_id integer NOT NULL,
---   title character varying(255) NOT NULL,
---   description text,
---   release_year integer,
---   language_id smallint NOT NULL,
---   original_language_id smallint,
---   rental_duration smallint DEFAULT 3 NOT NULL,
---   rental_rate numeric(4,2) DEFAULT 4.99 NOT NULL,
---   length smallint,
---   replacement_cost numeric(5,2) DEFAULT 19.99 NOT NULL,
---   rating TEXT,
---   last_update timestamp without time zone DEFAULT now() NOT NULL,
---   special_features text[],
---   fulltext tsvector NOT NULL
--- );
+ALTER TABLE "dept_emp" ADD CONSTRAINT "fk_dept_emp_emp_no" FOREIGN KEY("emp_no")
+REFERENCES "employees" ("emp_no");
 
--- CREATE TABLE film_actor (
---   actor_id smallint NOT NULL,
---   film_id smallint NOT NULL,
---   last_update timestamp without time zone DEFAULT now() NOT NULL
--- );
+ALTER TABLE "dept_emp" ADD CONSTRAINT "fk_dept_emp_dept_no" FOREIGN KEY("dept_no")
+REFERENCES "departments" ("dept_no");
 
--- CREATE TABLE inventory (
---   inventory_id integer NOT NULL,
---   film_id smallint NOT NULL,
---   store_id smallint NOT NULL,
---   last_update timestamp without time zone DEFAULT now() NOT NULL
--- );
+ALTER TABLE "dept_manager" ADD CONSTRAINT "fk_dept_manager_dept_no" FOREIGN KEY("dept_no")
+REFERENCES "departments" ("dept_no");
 
--- CREATE TABLE payment (
---   payment_id integer NOT NULL,
---   customer_id smallint NOT NULL,
---   staff_id smallint NOT NULL,
---   rental_id integer NOT NULL,
---   amount numeric(5,2) NOT NULL,
---   payment_date timestamp without time zone NOT NULL
--- );
+ALTER TABLE "dept_manager" ADD CONSTRAINT "fk_dept_manager_emp_no" FOREIGN KEY("emp_no")
+REFERENCES "employees" ("emp_no");
 
--- CREATE TABLE rental (
---   rental_id integer NOT NULL,
---   rental_date timestamp without time zone NOT NULL,
---   inventory_id integer NOT NULL,
---   customer_id smallint NOT NULL,
---   return_date timestamp without time zone,
---   staff_id smallint NOT NULL,
---   last_update timestamp without time zone DEFAULT now() NOT NULL
--- );
+ALTER TABLE "employees" ADD CONSTRAINT "fk_employees_emp_title" FOREIGN KEY("emp_title")
+REFERENCES "titles" ("title_id");
 
--- CREATE TABLE staff (
---   staff_id integer NOT NULL,
---   first_name character varying(45) NOT NULL,
---   last_name character varying(45) NOT NULL,
---   address_id smallint NOT NULL,
---   email character varying(50),
---   store_id smallint NOT NULL,
---   active boolean DEFAULT true NOT NULL,
---   username character varying(16) NOT NULL,
---   password character varying(40),
---   last_update timestamp without time zone DEFAULT now() NOT NULL,
---   picture bytea
--- );
+ALTER TABLE "salaries" ADD CONSTRAINT "fk_salaries_emp_no" FOREIGN KEY("emp_no")
+REFERENCES "employees" ("emp_no");
 
--- CREATE TABLE store (
---     store_id integer NOT NULL,
---     manager_staff_id smallint NOT NULL,
---     address_id smallint NOT NULL,
---     last_update timestamp without time zone DEFAULT now() NOT NULL
--- );
+
